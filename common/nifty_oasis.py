@@ -3,6 +3,7 @@ import numpy as np
 from nibabel.testing import data_path
 import nibabel as nib
 import matplotlib.pyplot as plt
+import pandas
 from cv2 import cv2
 
 def show_slices(slices):
@@ -26,9 +27,10 @@ def img_to_jpg(img_path, slice_level, axis):
         pass 
     return(jpg)
 
-def extract_jpg(folder_path, file_location, detection_str, output_path, slice_level: int = 90, axis: int=2):
+def extract_jpg(folder_path, file_location, detection_str, output_path, ID_list, gender_list, slice_level: int = 90, axis: int=2):
     for f in os.listdir(folder_path):
         folder = os.path.join(folder_path,f,file_location)
+        gender = find_gender(f, ID_list, gender_list)
         for i in os.listdir(folder):
             img_path = os.path.join(folder,i)
             if img_path.find(detection_str) != -1:
@@ -40,7 +42,7 @@ def extract_jpg(folder_path, file_location, detection_str, output_path, slice_le
                 ax.set_axis_off()
                 fig.add_axes(ax)
                 ax.imshow(jpg, cmap="gray", aspect='auto')
-                fig.savefig(os.path.join(output_path,jpg_name))
+                fig.savefig(os.path.join(output_path, gender, jpg_name))
                 plt.close()
                 #cv2.imwrite(os.path.join(output_path,jpg_name), jpg)
 
@@ -64,14 +66,31 @@ def display_roi(folder_path, file_location, detection_str, upper_thres: int = 80
                     plt.suptitle("Center slices for EPI image %i" %j) 
                     plt.show()
 
+def read_oasis_csv(csv_path, colnames):
+    data = pandas.read_csv(csv_path, names= colnames)
+    ID_list = data.ID.tolist()
+    ID_list = ID_list[1:]
+    gender_list = data.MF.tolist()
+    gender_list = gender_list[1:]
+    return(ID_list,gender_list)
+
+def find_gender(folder_name, ID_list, gender_list):
+    gender = 'X'
+    for ID, gen in zip(ID_list,gender_list):
+        if folder_name == ID:
+            gender = gen
+    return(gender)
+
 if __name__ == '__main__':
     folder_path = './resources/OASIS/oasis_cross-sectional_disc1/disc1'
     file_location = 'PROCESSED/MPRAGE/T88_111'
     detection_str = 'masked_gfc.img'
-
+    csv_path = './resources/OASIS/oasis_cross-sectional.csv'
     output_path = './data/output/'
+    colnames = ['ID', 'MF', 'Hand', 'Age', 'Educ', 'SES', 'MMSE', 'CDR', 'eTIV', 'nWBV', 'ASF', 'Delay']
 
+    ID_list, gender_list = read_oasis_csv(csv_path,colnames)
     #display_roi(folder_path, file_location, detection_str)
-    extract_jpg(folder_path,file_location, detection_str, output_path)
+    extract_jpg(folder_path,file_location, detection_str, output_path, ID_list, gender_list)
 
 
