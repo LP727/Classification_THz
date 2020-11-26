@@ -1,10 +1,7 @@
 import os
-import numpy as np
-from nibabel.testing import data_path
 import nibabel as nib
 import matplotlib.pyplot as plt
 import pandas
-from cv2 import cv2
 
 def show_slices(slices):
     """ Function to display row of image slices """
@@ -44,7 +41,6 @@ def extract_jpg(folder_path, file_location, detection_str, output_path, ID_list,
                 ax.imshow(jpg, cmap="gray", aspect='auto')
                 fig.savefig(os.path.join(output_path, gender, jpg_name))
                 plt.close()
-                #cv2.imwrite(os.path.join(output_path,jpg_name), jpg)
 
 def display_roi(folder_path, file_location, detection_str, upper_thres: int = 80, lower_thresh: int=100):
     for f in os.listdir(folder_path):
