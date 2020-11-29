@@ -78,15 +78,17 @@ def find_gender(folder_name, ID_list, gender_list):
     return(gender)
 
 if __name__ == '__main__':
-    folder_path = './resources/OASIS/oasis_cross-sectional_disc1/disc1'
+    folder_path = './resources/OASIS1/'
     file_location = 'PROCESSED/MPRAGE/T88_111'
     detection_str = 'masked_gfc.img'
     csv_path = './resources/OASIS/oasis_cross-sectional.csv'
-    output_path = './data/output/'
+    output_path = './data/output/OASIS'
     colnames = ['ID', 'MF', 'Hand', 'Age', 'Educ', 'SES', 'MMSE', 'CDR', 'eTIV', 'nWBV', 'ASF', 'Delay']
 
     ID_list, gender_list = read_oasis_csv(csv_path,colnames)
     #display_roi(folder_path, file_location, detection_str)
-    extract_jpg(folder_path,file_location, detection_str, output_path, ID_list, gender_list)
+    for sub in os.listdir(folder_path):
+        path = os.path.join(folder_path,sub)
+        extract_jpg(path,file_location, detection_str, output_path, ID_list, gender_list)
 
 
