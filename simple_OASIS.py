@@ -21,14 +21,13 @@ def process_path(file_path, label):
     image = tf.io.read_file(file_path)
     image = tf.image.decode_jpeg(image, channels=3)
 
-    # img = tf.image.convert_image_dtype(img, tf.float32) # do
-    # prerpocessing instead
+    # prerpocessing
     image = tf.cast(image, tf.float32)
 
     image = tf.image.resize_with_pad(
         image, IMG_X_SIZE, IMG_Y_SIZE)
 
-    image = tf.keras.applications.mobilenet_v2.preprocess_input(image) #set value between -1 to 1, this is for mobilenetV2
+    image = tf.keras.applications.mobilenet_v2.preprocess_input(image) #set value between -1 to 1
 
     return image, label
 

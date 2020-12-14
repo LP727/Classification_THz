@@ -25,8 +25,8 @@ def process_path(file_path, label):
 LAYER_NAME = 'conv2d_1'
 MALE_CLASS_INDEX = 1
 FEMALE_CLASS_INDEX = 0
-data_path = './data/test/Val_FERET'
-output_path = './data/test/report'
+data_path = './data/test/Val_mrd_HCP'
+output_path = './data/test/report_mrd_HCP'
 image_files = os.listdir(data_path)
 idx = 0
 thres = len(image_files) / 2
@@ -42,7 +42,7 @@ for file_name in os.listdir(data_path):
 
     img, label = process_path(os.path.join(data_path,file_name), FEMALE_CLASS_INDEX)
     img = np.reshape(img, [1, 160, 160, 3])
-    model = tf.keras.models.load_model('./data/output/ckp/FERET.hdf5')
+    model = tf.keras.models.load_model('./data/output/ckp/HCP.hdf5')
     #model.summary()
 
     prediction = model.predict([img])
